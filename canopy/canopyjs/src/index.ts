@@ -28,7 +28,7 @@ interface GetUser {
 }
 
 interface RegisterApp {
-  (bootstrapFunction: (domNode: Node) => void): void;
+  (bootstrapFunction: (domNode: HTMLDivElement) => void): void;
 }
 
 interface RegisterConfigSapling {
