@@ -20,4 +20,6 @@ COPY package*.json ./
 
 RUN yarn install
 
+RUN yarn generate-proto-files
+
 COPY . .
