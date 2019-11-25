@@ -1,0 +1,26 @@
+import TabBox from '../components/tabBox/TabBox';
+
+# TabBox
+
+A TabBox or recipe box component.
+
+<TabBox content={[
+    {title: () => <>I am the very model</>, content: "of a modern-major-general"}, {title: "I've Information", content: () => <h1>I've information vegetable, animal, and mineral
+I know the kings of England, and I quote the fights historical
+From marathon to Waterloo in order categorical</h1>}
+]}/>
+
+
+See the HTML example (aria labels have been omitted for legibility):
+
+```HTML
+    <div class="tab-box">
+      <div class="tab-box-options">
+        <button class="tab-box-option">Option 1</button>
+        <button class="tab-box-option">Option 2</button>
+      </div>
+      <div class="tab-box-content">
+        Some option's content
+      </div>
+    </div>
+```

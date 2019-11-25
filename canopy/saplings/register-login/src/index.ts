@@ -40,6 +40,70 @@ registerConfigSapling("login", () => {
     const { href } = canopyUrl;
     history.push("/login");
     registerApp(domNode => {
+      domNode.innerHTML = `<div style="padding: 3rem"><div class="tab-box">
+      <div class="tab-box-options" role="tablist" aria-label="login-or-register">
+        <button
+          class="tab-box-option"
+          role="tab"
+          aria-selected="true"
+          aria-controls="login-panel"
+          id="login-panel-tab"
+          tabindex="0"
+        >
+          Login
+        </button>
+        <button
+          class="tab-box-option"
+          role="tab"
+          aria-selected="false"
+          aria-controls="register-panel"
+          id="register-panel-tab"
+          tabindex="-1"
+        >
+          Register
+        </button>
+      </div>
+      <div
+        class="tab-box-content"
+        id="login-panel"
+        role="tabpanel"
+        tabindex="0"
+        aria-labelledby="login-panel-tab"
+      >
+        <form id="login-form">
+          <h1>Login</h1>
+          <input type="text" name="username" /><input
+            type="password"
+            name="password"
+          /><button type="submit">Login</button>
+        </form>
+      </div>
+      <div
+        class="tab-box-content"
+        id="register-panel"
+        role="tabpanel"
+        tabindex="0"
+        aria-labelledby="register-panel-tab"
+        hidden
+      >
+        <form id="register-form">
+          <h1>Register</h1>
+          <input type="text" name="username" /><input
+            type="password"
+            name="password"
+          /><button type="submit">Register</button>
+        </form>
+      </div>
+    </div>
+    </div>
+    `;
+
+      const tabs = Array.from(domNode.querySelectorAll(".tab-box-option"));
+      const forms = Array.from(domNode.querySelectorAll("form"));
+
+      const [loginForm, registerForm] = forms;
+      const panels = Array.from(domNode.querySelectorAll(".tab-box-content"));
+
       function formSumbitEventToFormData(event: Event) {
         event.preventDefault();
         return new FormData(event.target as HTMLFormElement);
@@ -63,12 +127,11 @@ registerConfigSapling("login", () => {
             .parentNode as HTMLDivElement;
 
           //Simulate some wait time based
-          let progress = 0;
-          const time = 10000;
+          const time = 100000;
           function doProgress() {
-            progress += time / 1000;
-            formParent.innerHTML = `<progress style="font-size: 3rem" max="${time /
-              2}" value="${progress % time}"/>`;
+            const step = (Math.sin(Date.now() / 500) + 1) / 2;
+            formParent.innerHTML = `<progress class='progress' max="${1000}" value="${step *
+              1000}"/>`;
             window.requestAnimationFrame(doProgress);
           }
           doProgress();
@@ -84,17 +147,41 @@ registerConfigSapling("login", () => {
       const handleRegisterEvent = createFormActionCapture("register");
       const handleLoginEvent = createFormActionCapture("login");
 
-      const registerForm = document.createElement("form");
       registerForm.addEventListener("submit", handleRegisterEvent);
 
-      const loginForm = document.createElement("form");
       loginForm.addEventListener("submit", handleLoginEvent);
 
-      registerForm.innerHTML = `<h1>Register</h1><input type='text' name='username'/><input type='password' name='password'/><button type='submit'>Register</button>`;
-      loginForm.innerHTML = `<h1>Login</h1><input type='text' name='username'/><input type='password' name='password'/><button type='submit'>Login</button>`;
+      forms.forEach(form => {
+        form.addEventListener("submit", e => {
+          e.preventDefault();
+        });
+      });
 
-      domNode.insertAdjacentElement("beforeend", registerForm);
-      domNode.insertAdjacentElement("beforeend", loginForm);
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => {
+          setSelectedTab(index);
+        });
+      });
+
+      function setSelectedTab(tabIndex) {
+        tabs.forEach((tab, i) => {
+          const selected = i === tabIndex;
+          tab.setAttribute("tabindex", selected ? "0" : "-1");
+          tab.setAttribute("aria-selected", selected ? "true" : "false");
+          tab.setAttribute(
+            "class",
+            selected ? "tab-box-option active" : "tab-box-option"
+          );
+        });
+
+        panels.forEach((panel, i) => {
+          if (i === tabIndex) {
+            panel.removeAttribute("hidden");
+          } else {
+            panel.setAttribute("hidden", "true");
+          }
+        });
+      }
     });
   }
 });
