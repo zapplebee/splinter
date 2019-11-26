@@ -21,24 +21,37 @@ const process = require('process');
 
 const path = require('path');
 
-const proto_dir = process.argv[2];
+const protoDir = process.argv[2];
 
-let files = fs.readdirSync(proto_dir).map(f => path.resolve(proto_dir, f));
+const files = fs.readdirSync(protoDir).map(f => path.resolve(protoDir, f));
+
+pbjs.main(
+  ['--target', 'json', '-o', 'src/compiled_protos.json', ...files],
+  function handleJsCompileError(err) {
+    if (err) {
+      console.error(`Error compiling protobuf bundle to JSON: ${err}`);
+    } else {
+      console.log('Sucessfully created protobuf bundle to JSON');
+    }
+  }
+);
 
 pbjs.main(
   [
     '-t',
     'static-module',
     '-w',
-    'es6',
+    'commonjs',
     '-o',
     'src/compiled_protos.js',
     ...files
   ],
-  function(err) {
-    err
-      ? console.error(`Error compiling protobuf bundle: ${err}`)
-      : console.log('Sucessfully created protobuf bundle');
+  function handleJsCompileError(err) {
+    if (err) {
+      console.error(`Error compiling protobuf bundle: ${err}`);
+    } else {
+      console.log('Sucessfully created protobuf bundle');
+    }
   }
 );
 

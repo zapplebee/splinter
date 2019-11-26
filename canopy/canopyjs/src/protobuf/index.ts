@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import protobuf, { Root } from 'protobufjs';
-const protoJSON = require('../compiled_protos.json');
+import protoJSON from '../compiled_protos.json';
 
 const root: Root = protobuf.Root.fromJSON(protoJSON);
 
